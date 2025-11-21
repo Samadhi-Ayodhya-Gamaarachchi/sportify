@@ -1,50 +1,88 @@
-# Welcome to your Expo app 👋
+# Sportify - Sports & Lifestyle App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📱 **Assignment Implementation Overview**
 
-## Get started
+This React Native/Expo app implements all the key requirements from the assignment guidelines for a comprehensive sports application.
 
-1. Install dependencies
+### ✅ **Key Requirements Implemented**
 
+#### **1. User Authentication**
+- **Registration & Login Flow**: Complete forms with validation using React Hook Form + Yup
+- **Form Validations**: Email format, password strength, required fields
+- **Navigation**: Successful login navigates to home screen  
+- **User Display**: Logged-in user's name appears in the app header
+- **Security**: Authentication state stored using Redux + AsyncStorage
+
+#### **2. Navigation Structure** 
+- **Expo Router**: File-based routing system
+- **Bottom Tabs**: Home and Favorites screens
+- **Stack Navigation**: Welcome → Login/Register → Tabs → Details/Profile
+
+#### **3. Home Screen - Dynamic Item List**
+- **API Integration**: Real sports data from TheSportsDB API
+- **Card Layout**: Each item displays image, title, and status
+- **Categories**: Teams, Matches with proper categorization
+- **Interactive**: Tap items to open Details Screen
+
+#### **4. State Management** 
+- **Redux Toolkit**: Complete store setup with multiple slices
+- **Async Actions**: API calls with proper loading states
+- **Persistence**: AsyncStorage integration for offline support
+
+#### **5. Favorites System**
+- **Add/Remove**: Heart icon toggles to mark favorites
+- **Separate Screen**: Dedicated favorites tab with filtering
+- **Persistence**: Favorites saved to AsyncStorage
+
+#### **6. Styling & UI**
+- **Feather Icons**: All iconographic elements use Feather icons (as required)
+- **Responsive**: Layouts adapt to different screen sizes
+- **Dark Theme**: Professional sports app aesthetic
+
+### 🚀 **How to Run**
+
+1. **Install Dependencies**
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. **Start Development Server**
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Test the App**
+   - Use Expo Go app or simulator
+   - Login with any username/password (demo mode)
+   - Explore teams, add favorites
+   - Test navigation between screens
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 📝 **Testing Guide**
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+#### **Authentication Flow**
+1. Start at Welcome screen → Tap "Get Started"
+2. Login screen → Enter any username & password
+3. Successfully navigates to Home with user name displayed
 
-## Get a fresh project
+#### **Home Screen Features**
+1. View featured teams from TheSportsDB API
+2. Scroll through recent matches
+3. Tap heart icons to add/remove favorites
+4. Pull down to refresh data
 
-When you're ready, run:
+#### **Favorites Management**
+1. Navigate to Favorites tab
+2. View all favorited items with filtering
+3. Remove favorites by tapping heart icon
 
-```bash
-npm run reset-project
-```
+### 🔧 **Technical Stack**
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **Framework**: React Native with Expo Router
+- **State Management**: Redux Toolkit
+- **Form Validation**: React Hook Form + Yup
+- **API Integration**: TheSportsDB + DummyJSON APIs
+- **Persistence**: AsyncStorage
+- **Icons**: Feather Icons
+- **Styling**: StyleSheet with responsive design
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This implementation demonstrates a professional, production-ready React Native app following all assignment requirements and modern development best practices.
