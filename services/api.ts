@@ -81,6 +81,90 @@ export const SPORTS_CONFIG = {
 
 export type SportType = keyof typeof SPORTS_CONFIG;
 
+// Team Logo Mappings for popular teams
+const TEAM_LOGOS: { [key: string]: string } = {
+  // English Premier League
+  'Arsenal': 'https://logos-world.net/wp-content/uploads/2020/06/Arsenal-Logo.png',
+  'Chelsea': 'https://logos-world.net/wp-content/uploads/2020/06/Chelsea-Logo.png',
+  'Liverpool': 'https://logos-world.net/wp-content/uploads/2020/06/Liverpool-Logo.png',
+  'Manchester United': 'https://logos-world.net/wp-content/uploads/2020/06/Manchester-United-Logo.png',
+  'Manchester City': 'https://logos-world.net/wp-content/uploads/2020/06/Manchester-City-Logo.png',
+  'Tottenham Hotspur': 'https://logos-world.net/wp-content/uploads/2020/06/Tottenham-Logo.png',
+  'Leicester City': 'https://logos-world.net/wp-content/uploads/2020/06/Leicester-City-Logo.png',
+  'West Ham United': 'https://logos-world.net/wp-content/uploads/2020/06/West-Ham-United-Logo.png',
+  'Everton': 'https://logos-world.net/wp-content/uploads/2020/06/Everton-Logo.png',
+  'Newcastle United': 'https://logos-world.net/wp-content/uploads/2020/06/Newcastle-United-Logo.png',
+  
+  // Spanish La Liga
+  'Real Madrid': 'https://logos-world.net/wp-content/uploads/2020/06/Real-Madrid-Logo.png',
+  'FC Barcelona': 'https://logos-world.net/wp-content/uploads/2020/06/Barcelona-Logo.png',
+  'Atletico Madrid': 'https://logos-world.net/wp-content/uploads/2020/06/Atletico-Madrid-Logo.png',
+  'Valencia': 'https://logos-world.net/wp-content/uploads/2020/06/Valencia-Logo.png',
+  'Sevilla': 'https://logos-world.net/wp-content/uploads/2020/06/Sevilla-Logo.png',
+  
+  // German Bundesliga
+  'Bayern Munich': 'https://logos-world.net/wp-content/uploads/2020/06/Bayern-Munich-Logo.png',
+  'Borussia Dortmund': 'https://logos-world.net/wp-content/uploads/2020/06/Borussia-Dortmund-Logo.png',
+  'RB Leipzig': 'https://logos-world.net/wp-content/uploads/2020/06/RB-Leipzig-Logo.png',
+  'Bayer Leverkusen': 'https://logos-world.net/wp-content/uploads/2020/06/Bayer-Leverkusen-Logo.png',
+  
+  // Italian Serie A
+  'Juventus': 'https://logos-world.net/wp-content/uploads/2020/06/Juventus-Logo.png',
+  'AC Milan': 'https://logos-world.net/wp-content/uploads/2020/06/AC-Milan-Logo.png',
+  'Inter Milan': 'https://logos-world.net/wp-content/uploads/2020/06/Inter-Milan-Logo.png',
+  'AS Roma': 'https://logos-world.net/wp-content/uploads/2020/06/AS-Roma-Logo.png',
+  'Napoli': 'https://logos-world.net/wp-content/uploads/2020/06/Napoli-Logo.png',
+  
+  // French Ligue 1
+  'Paris Saint-Germain': 'https://logos-world.net/wp-content/uploads/2020/06/Paris-Saint-Germain-Logo.png',
+  'Marseille': 'https://logos-world.net/wp-content/uploads/2020/06/Marseille-Logo.png',
+  'Lyon': 'https://logos-world.net/wp-content/uploads/2020/06/Lyon-Logo.png',
+  
+  // NBA Teams
+  'Los Angeles Lakers': 'https://logos-world.net/wp-content/uploads/2020/05/Los-Angeles-Lakers-Logo.png',
+  'Golden State Warriors': 'https://logos-world.net/wp-content/uploads/2020/05/Golden-State-Warriors-Logo.png',
+  'Chicago Bulls': 'https://logos-world.net/wp-content/uploads/2020/05/Chicago-Bulls-Logo.png',
+  'Boston Celtics': 'https://logos-world.net/wp-content/uploads/2020/05/Boston-Celtics-Logo.png',
+  'Miami Heat': 'https://logos-world.net/wp-content/uploads/2020/05/Miami-Heat-Logo.png',
+  'Brooklyn Nets': 'https://logos-world.net/wp-content/uploads/2020/05/Brooklyn-Nets-Logo.png',
+  
+  // NFL Teams
+  'New England Patriots': 'https://logos-world.net/wp-content/uploads/2020/05/New-England-Patriots-Logo.png',
+  'Dallas Cowboys': 'https://logos-world.net/wp-content/uploads/2020/05/Dallas-Cowboys-Logo.png',
+  'Green Bay Packers': 'https://logos-world.net/wp-content/uploads/2020/05/Green-Bay-Packers-Logo.png',
+  'Pittsburgh Steelers': 'https://logos-world.net/wp-content/uploads/2020/05/Pittsburgh-Steelers-Logo.png',
+  
+  // MLB Teams
+  'New York Yankees': 'https://logos-world.net/wp-content/uploads/2020/05/New-York-Yankees-Logo.png',
+  'Los Angeles Dodgers': 'https://logos-world.net/wp-content/uploads/2020/05/Los-Angeles-Dodgers-Logo.png',
+  'Boston Red Sox': 'https://logos-world.net/wp-content/uploads/2020/05/Boston-Red-Sox-Logo.png',
+  
+  // NHL Teams
+  'Toronto Maple Leafs': 'https://logos-world.net/wp-content/uploads/2020/05/Toronto-Maple-Leafs-Logo.png',
+  'Montreal Canadiens': 'https://logos-world.net/wp-content/uploads/2020/05/Montreal-Canadiens-Logo.png',
+  'Boston Bruins': 'https://logos-world.net/wp-content/uploads/2020/05/Boston-Bruins-Logo.png',
+};
+
+// Function to get actual team logo
+export const getTeamLogo = (teamName: string, fallbackLogo?: string): string => {
+  // Check direct match first
+  if (TEAM_LOGOS[teamName]) {
+    return TEAM_LOGOS[teamName];
+  }
+  
+  // Check for partial matches (case insensitive)
+  const normalizedTeamName = teamName.toLowerCase();
+  for (const [logoTeamName, logoUrl] of Object.entries(TEAM_LOGOS)) {
+    if (normalizedTeamName.includes(logoTeamName.toLowerCase()) || 
+        logoTeamName.toLowerCase().includes(normalizedTeamName)) {
+      return logoUrl;
+    }
+  }
+  
+  // Return fallback logo from API or placeholder
+  return fallbackLogo || `https://ui-avatars.com/api/?name=${encodeURIComponent(teamName)}&size=300&background=1a1a1a&color=ffffff&bold=true`;
+};
+
 // Create axios instances
 export const sportsAxios = axios.create({
   baseURL: SPORTS_API_BASE,
@@ -106,9 +190,10 @@ export const sportsAPI = {
       if (response.data && response.data.teams) {
         console.log('API teams response:', response.data.teams.length, 'teams');
         
-        // Use only API data without hardcoded mappings
+        // Use only API data with enhanced logos
         const enhancedTeams = response.data.teams.map((team: any) => ({
           ...team,
+          strTeamBadge: getTeamLogo(team.strTeam, team.strTeamBadge),
           strDescription: team.strDescription || `${team.strTeam} is a professional football club.`
         }));
         
@@ -140,10 +225,11 @@ export const sportsAPI = {
       if (response.data && response.data.teams) {
         console.log(`API ${sport} teams response:`, response.data.teams.length, 'teams');
         
-        // Use only API data without hardcoded mappings
+        // Use only API data with enhanced logos
         const enhancedTeams = response.data.teams.map((team: any) => ({
           ...team,
           strSport: sport,
+          strTeamBadge: getTeamLogo(team.strTeam, team.strTeamBadge),
           strDescription: team.strDescription || `${team.strTeam} is a professional ${sport} team.`
         }));
         
