@@ -4,14 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ImageBackground, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from '../../hooks/useTheme';
+import { SPORTS_CONFIG, SportType } from '../../services/api';
 import { AppDispatch, RootState } from '../../store';
 import { toggleFavorite } from '../../store/slices/favoritesSlice';
-import { fetchMatches, fetchTeams } from '../../store/slices/sportsSlice';
+import { fetchMatches, fetchPlayers, fetchTeamsBySport, setCurrentSport } from '../../store/slices/sportsSlice';
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { teams, matches, isLoading, selectedLeague, error } = useSelector((state: RootState) => state.sports);
+  const { teams, matches, players, isLoading, selectedLeague, error, currentSport, availableSports } = useSelector((state: RootState) => state.sports);
   const { user } = useSelector((state: RootState) => state.auth);
   const favorites = useSelector((state: RootState) => state.favorites.items);
   const { theme, isDarkMode } = useTheme();
@@ -31,15 +32,22 @@ export default function HomeScreen() {
   const loadData = async () => {
     try {
       console.log('=== LOADING DATA ===');
+      console.log('Current sport:', currentSport);
       console.log('Current league:', selectedLeague);
       console.log('Current teams count:', teams.length);
-      console.log('Current matches count:', matches.length);
       
-      const teamResult = await dispatch(fetchTeams(selectedLeague || 'English Premier League'));
-      console.log('Team result:', teamResult);
+      // Fetch teams by current sport
+      const teamResult = await dispatch(fetchTeamsBySport(currentSport));
+      console.log('Team result for', currentSport, ':', teamResult);
       
-      const matchResult = await dispatch(fetchMatches(selectedLeague || 'English Premier League'));
-      console.log('Match result:', matchResult);
+      // Only fetch soccer matches and players for now
+      if (currentSport === 'soccer') {
+        const matchResult = await dispatch(fetchMatches(selectedLeague || 'English Premier League'));
+        console.log('Match result:', matchResult);
+        
+        const playersResult = await dispatch(fetchPlayers('Arsenal'));
+        console.log('Players result:', playersResult);
+      }
       
       console.log('=== DATA LOADED ===');
     } catch (error) {
@@ -67,6 +75,10 @@ export default function HomeScreen() {
 
   const isFavorite = (id: string) => {
     return favorites.some(fav => fav.id === id);
+  };
+
+  const handleSportChange = (sport: SportType) => {
+    dispatch(setCurrentSport(sport));
   };
 
   // Fallback data for when API is loading or fails
@@ -114,6 +126,7 @@ export default function HomeScreen() {
   return (
     <ScrollView 
       style={[styles.container, { backgroundColor: theme.background }]} 
+      contentContainerStyle={{ paddingBottom: 100 }}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -135,17 +148,38 @@ export default function HomeScreen() {
           </View>
         </View>
         
-        <View style={styles.categoryContainer}>
-          <TouchableOpacity style={[styles.categoryButton, { backgroundColor: theme.primary }]}>
-            <Text style={[styles.categoryButtonText, { color: '#fff' }]}>Public All</Text>
-          </TouchableOpacity>
-         
-        </View>
+        {/* Sport Selection */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sportsSelector}>
+          {availableSports.map((sport) => (
+            <TouchableOpacity
+              key={sport.id}
+              style={[
+                styles.sportButton,
+                { backgroundColor: currentSport === sport.id ? theme.primary : theme.background }
+              ]}
+              onPress={() => handleSportChange(sport.id as SportType)}
+            >
+              <Feather 
+                name={sport.icon as any} 
+                size={16} 
+                color={currentSport === sport.id ? '#fff' : theme.text} 
+              />
+              <Text style={[
+                styles.sportButtonText,
+                { color: currentSport === sport.id ? '#fff' : theme.text }
+              ]}>
+                {sport.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        
+       
       </View>
 
       {/* Featured Teams */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Featured Teams</Text>
+        
         {error && (
           <View style={styles.errorContainer}>
             <Text style={[styles.errorText, { color: theme.primary }]}>Error: {error}</Text>
@@ -172,13 +206,10 @@ export default function HomeScreen() {
             >
               <ImageBackground
                 source={{ 
-                  uri: team.strTeamBadge || 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=200&fit=crop&crop=center'
+                  uri: team.strTeamBadge || `https://via.placeholder.com/400x200/E53E3E/ffffff?text=${encodeURIComponent(team.strTeam || 'Team')}`
                 }}
                 style={styles.featuredImage}
                 imageStyle={styles.featuredImageStyle}
-                defaultSource={{
-                  uri: 'https://via.placeholder.com/400x200/E53E3E/ffffff?text=' + encodeURIComponent(team.strTeam || 'Team')
-                }}
                 onError={() => {
                   console.log('Image failed to load for team:', team.strTeam);
                 }}
@@ -207,9 +238,10 @@ export default function HomeScreen() {
           ))}
       </View>
 
-      {/* Recent Matches Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Matches</Text>
+      {/* Recent Matches Section - Only for Soccer */}
+      {currentSport === 'soccer' && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Matches</Text>
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={theme.primary} />
@@ -247,7 +279,57 @@ export default function HomeScreen() {
         ) : (
           <Text style={[styles.noDataText, { color: theme.textSecondary }]}>No matches available</Text>
         )}
-      </View>
+        </View>
+      )}
+
+      {/* Top Players Section - Only for Soccer */}
+      {currentSport === 'soccer' && (
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Top Players</Text>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={theme.primary} />
+          </View>
+        ) : (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+            {players.slice(0, 6).map((player) => (
+              <TouchableOpacity 
+                key={player.idPlayer} 
+                style={[styles.playerCard, { backgroundColor: theme.surface, borderColor: theme.border }]}
+                onPress={() => router.push(`/details?id=${player.idPlayer}&type=player`)}
+              >
+                <ImageBackground
+                  source={{ 
+                    uri: player.strThumb || `https://via.placeholder.com/150x150/1a1a1a/ffffff?text=${encodeURIComponent(player.strPlayer)}`
+                  }}
+                  style={styles.playerImage}
+                  imageStyle={styles.playerImageStyle}
+                  defaultSource={require('../../assets/images/react-logo.png')}
+                  onError={(e) => {
+                    console.log('Player image error for', player.strPlayer, ':', e.nativeEvent.error);
+                  }}
+                >
+                  <View style={styles.playerOverlay}>
+                    <Text style={styles.playerName}>{player.strPlayer}</Text>
+                    <Text style={styles.playerTeam}>{player.strPosition || 'Player'}</Text>
+                    <TouchableOpacity 
+                      style={styles.miniHeart}
+                      onPress={() => handleFavoriteToggle(player, 'player')}
+                    >
+                      <Feather 
+                        name="heart" 
+                        size={16} 
+                        color={favorites.some(fav => fav.id === player.idPlayer) ? '#ff6b6b' : '#666'} 
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
+        </View>
+      )}
 
       {/* Top Teams Section */}
       <View style={styles.section}>
@@ -266,10 +348,13 @@ export default function HomeScreen() {
               >
                 <ImageBackground
                   source={{ 
-                    uri: team.strTeamBadge || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face'
+                    uri: team.strTeamBadge || `https://via.placeholder.com/150x150/E53E3E/ffffff?text=${encodeURIComponent(team.strTeam)}`
                   }}
                   style={styles.playerImage}
                   imageStyle={styles.playerImageStyle}
+                  onError={() => {
+                    console.log('Team image failed for:', team.strTeam);
+                  }}
                 >
                   <View style={styles.playerOverlay}>
                     <Text style={styles.playerName}>{team.strTeam}</Text>
@@ -516,5 +601,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
     padding: 20,
+  },
+  horizontalScroll: {
+    paddingVertical: 10,
+  },
+  sportsSelector: {
+    paddingVertical: 10,
+  },
+  sportButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 12,
+    borderRadius: 20,
+    gap: 6,
+  },
+  sportButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

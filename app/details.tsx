@@ -5,7 +5,7 @@ import { ActivityIndicator, Alert, ImageBackground, ScrollView, StyleSheet, Text
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from '../hooks/useTheme';
 import { AppDispatch, RootState } from '../store';
-import { addToFavorites, removeFromFavorites } from '../store/slices/favoritesSlice';
+import { addFavorite, removeFavorite } from '../store/slices/favoritesSlice';
 
 interface DetailItem {
   id: string;
@@ -13,19 +13,19 @@ interface DetailItem {
   subtitle: string;
   description: string;
   image: string;
-  type: 'team' | 'match';
+  type: 'team' | 'match' | 'player';
   additionalInfo: any;
 }
 
 export default function DetailsScreen() {
-  const { id, type } = useLocalSearchParams<{ id: string; type: 'team' | 'match' }>();
+  const { id, type } = useLocalSearchParams<{ id: string; type: 'team' | 'match' | 'player' }>();
   const [item, setItem] = useState<DetailItem | null>(null);
   const [loading, setLoading] = useState(true);
   
   const dispatch = useDispatch<AppDispatch>();
   const { theme } = useTheme();
   const { items: favoriteItems } = useSelector((state: RootState) => state.favorites);
-  const { teams, matches } = useSelector((state: RootState) => state.sports);
+  const { teams, matches, players } = useSelector((state: RootState) => state.sports);
 
   const isFavorite = favoriteItems.some(fav => fav.id === id);
 
@@ -73,6 +73,26 @@ export default function DetailsScreen() {
           }
         });
       }
+    } else if (type === 'player') {
+      const player = players.find(p => p.idPlayer === id);
+      if (player) {
+        setItem({
+          id: player.idPlayer,
+          name: player.strPlayer,
+          subtitle: player.strPosition || 'Football Player',
+          description: `${player.strNationality || 'International'} player for ${player.strTeam || 'Professional Club'}`,
+          image: player.strThumb || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+          type: 'player',
+          additionalInfo: {
+            position: player.strPosition,
+            nationality: player.strNationality,
+            team: player.strTeam,
+            height: player.strHeight,
+            weight: player.strWeight,
+            description: `${player.strPlayer} is a professional football player known for their skills and dedication.`,
+          }
+        });
+      }
     }
     
     setLoading(false);
@@ -85,13 +105,14 @@ export default function DetailsScreen() {
       id: item.id,
       name: item.name,
       image: item.image,
-      type: item.type
+      type: item.type,
+      dateAdded: new Date().toISOString()
     };
 
     if (isFavorite) {
-      dispatch(removeFromFavorites(item.id));
+      dispatch(removeFavorite(item.id));
     } else {
-      dispatch(addToFavorites(favoriteItem));
+      dispatch(addFavorite(favoriteItem));
     }
   };
 
@@ -200,7 +221,7 @@ export default function DetailsScreen() {
         {/* Dynamic Content Section */}
         <View style={styles.statsSection}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            {item.type === 'team' ? 'Team Details' : 'Match Details'}
+            {item.type === 'team' ? 'Team Details' : item.type === 'player' ? 'Player Details' : 'Match Details'}
           </Text>
           <View style={styles.statsGrid}>
             {item.type === 'team' ? (
@@ -263,12 +284,14 @@ export default function DetailsScreen() {
         {/* Description Section */}
         <View style={styles.upcomingSection}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            {item.type === 'team' ? 'About Team' : 'Match Details'}
+            {item.type === 'team' ? 'About Team' : item.type === 'player' ? 'About Player' : 'Match Details'}
           </Text>
           <View style={[styles.matchCard, { backgroundColor: theme.surface }]}>
             <Text style={[styles.descriptionText, { color: theme.text }]}>
               {item.type === 'team' 
                 ? item.additionalInfo.description || `${item.name} is a professional football team competing in ${item.additionalInfo.league || 'top-level'} football.`
+                : item.type === 'player'
+                ? item.additionalInfo.description || `${item.name} is a ${item.additionalInfo.position || 'professional football player'} known for exceptional skills and dedication to the sport.`
                 : `This match between ${item.additionalInfo.homeTeam} and ${item.additionalInfo.awayTeam} ${item.additionalInfo.status ? `is ${item.additionalInfo.status.toLowerCase()}` : 'was scheduled'} on ${item.additionalInfo.date || 'the specified date'}.`
               }
             </Text>

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { sportsAPI } from '../../services/api';
+import { sportsAPI, SportType } from '../../services/api';
 
 interface Team {
   idTeam: string;
@@ -8,6 +8,7 @@ interface Team {
   strStadium?: string;
   strLeague?: string;
   strDescription?: string;
+  strSport?: string;
 }
 
 interface Player {
@@ -41,6 +42,8 @@ interface SportsState {
   isLoading: boolean;
   error: string | null;
   selectedLeague: string;
+  currentSport: SportType;
+  availableSports: any[];
 }
 
 const initialState: SportsState = {
@@ -50,7 +53,9 @@ const initialState: SportsState = {
   leagues: [],
   isLoading: false,
   error: null,
-  selectedLeague: 'Premier League',
+  selectedLeague: 'English Premier League',
+  currentSport: 'soccer',
+  availableSports: sportsAPI.getAllSports(),
 };
 
 // Async thunks
@@ -62,6 +67,18 @@ export const fetchTeams = createAsyncThunk(
       return response.teams || [];
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch teams');
+    }
+  }
+);
+
+export const fetchTeamsBySport = createAsyncThunk(
+  'sports/fetchTeamsBySport',
+  async (sport: SportType, { rejectWithValue }) => {
+    try {
+      const response = await sportsAPI.getTeamsBySport(sport);
+      return response.teams || [];
+    } catch (error: any) {
+      return rejectWithValue(error.message || `Failed to fetch ${sport} teams`);
     }
   }
 );
@@ -109,6 +126,11 @@ const sportsSlice = createSlice({
     setSelectedLeague: (state, action: PayloadAction<string>) => {
       state.selectedLeague = action.payload;
     },
+    setCurrentSport: (state, action: PayloadAction<SportType>) => {
+      state.currentSport = action.payload;
+      // Reset teams when changing sport
+      state.teams = [];
+    },
     clearError: (state) => {
       state.error = null;
     },
@@ -155,9 +177,22 @@ const sportsSlice = createSlice({
       // Search teams
       .addCase(searchTeams.fulfilled, (state, action) => {
         state.teams = action.payload;
+      })
+      // Fetch teams by sport
+      .addCase(fetchTeamsBySport.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchTeamsBySport.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.teams = action.payload;
+      })
+      .addCase(fetchTeamsBySport.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { setSelectedLeague, clearError } = sportsSlice.actions;
+export const { setSelectedLeague, setCurrentSport, clearError } = sportsSlice.actions;
 export default sportsSlice.reducer;
