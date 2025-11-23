@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "sportify",
-    "slug": "sportify",
+    "name": "SportFury",
+    "slug": "sportfury",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "sportify",
+    "scheme": "sportfury",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

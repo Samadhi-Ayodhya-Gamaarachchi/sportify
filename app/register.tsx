@@ -71,7 +71,7 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView 
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView 
@@ -84,20 +84,20 @@ export default function RegisterScreen() {
           <View style={styles.logo}>
             <Feather name="activity" size={32} color="#fff" />
           </View>
-          <Text style={styles.brandName}>SPORTIFY</Text>
-          <Text style={styles.title}>Join the Action</Text>
-          <Text style={styles.subtitle}>Create your account to get started.</Text>
+          <Text style={[styles.brandName, { color: theme.text }]}>SportFury</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Join the Action</Text>
+          <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Create your account to get started.</Text>
         </View>
 
         <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>First Name</Text>
-          <View style={styles.inputWrapper}>
-            <Feather name="user" size={20} color="#666" style={styles.inputIcon} />
+          <Text style={[styles.label, { color: theme.text }]}>First Name</Text>
+          <View style={[styles.inputWrapper, { backgroundColor: theme.surface }]}>
+            <Feather name="user" size={20} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.text }]}
               placeholder="Enter your first name"
-              placeholderTextColor="#666"
+              placeholderTextColor={theme.textSecondary}
               value={firstName}
               onChangeText={setFirstName}
             />
@@ -105,13 +105,13 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Last Name</Text>
-          <View style={styles.inputWrapper}>
-            <Feather name="user" size={20} color="#666" style={styles.inputIcon} />
+          <Text style={[styles.label, { color: theme.text }]}>Last Name</Text>
+          <View style={[styles.inputWrapper, { backgroundColor: theme.surface }]}>
+            <Feather name="user" size={20} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.text }]}
               placeholder="Enter your last name"
-              placeholderTextColor="#666"
+              placeholderTextColor={theme.textSecondary}
               value={lastName}
               onChangeText={setLastName}
             />
@@ -119,13 +119,13 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Username</Text>
-          <View style={styles.inputWrapper}>
-            <Feather name="at-sign" size={20} color="#666" style={styles.inputIcon} />
+          <Text style={[styles.label, { color: theme.text }]}>Username</Text>
+          <View style={[styles.inputWrapper, { backgroundColor: theme.surface }]}>
+            <Feather name="at-sign" size={20} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.text }]}
               placeholder="Choose a username"
-              placeholderTextColor="#666"
+              placeholderTextColor={theme.textSecondary}
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
@@ -134,13 +134,13 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
-          <View style={styles.inputWrapper}>
-            <Feather name="mail" size={20} color="#666" style={styles.inputIcon} />
+          <Text style={[styles.label, { color: theme.text }]}>Email</Text>
+          <View style={[styles.inputWrapper, { backgroundColor: theme.surface }]}>
+            <Feather name="mail" size={20} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.text }]}
               placeholder="alex.smith@email.com"
-              placeholderTextColor="#666"
+              placeholderTextColor={theme.textSecondary}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -150,13 +150,13 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
-          <View style={styles.inputWrapper}>
-            <Feather name="lock" size={20} color="#666" style={styles.inputIcon} />
+          <Text style={[styles.label, { color: theme.text }]}>Password</Text>
+          <View style={[styles.inputWrapper, { backgroundColor: theme.surface }]}>
+            <Feather name="lock" size={20} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.text }]}
               placeholder="Enter your password"
-              placeholderTextColor="#666"
+              placeholderTextColor={theme.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -168,20 +168,20 @@ export default function RegisterScreen() {
               <Feather 
                 name={showPassword ? "eye" : "eye-off"} 
                 size={20} 
-                color="#666" 
+                color={theme.textSecondary} 
               />
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Confirm Password</Text>
-          <View style={styles.inputWrapper}>
-            <Feather name="lock" size={20} color="#666" style={styles.inputIcon} />
+          <Text style={[styles.label, { color: theme.text }]}>Confirm Password</Text>
+          <View style={[styles.inputWrapper, { backgroundColor: theme.surface }]}>
+            <Feather name="lock" size={20} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.text }]}
               placeholder="Re-enter your password"
-              placeholderTextColor="#666"
+              placeholderTextColor={theme.textSecondary}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
@@ -193,7 +193,7 @@ export default function RegisterScreen() {
               <Feather 
                 name={showConfirmPassword ? "eye" : "eye-off"} 
                 size={20} 
-                color="#666" 
+                color={theme.textSecondary} 
               />
             </TouchableOpacity>
           </View>
@@ -212,32 +212,32 @@ export default function RegisterScreen() {
         </TouchableOpacity>
 
         <View style={styles.loginContainer}>
-          <Text style={styles.loginText}>Already have an account? </Text>
+          <Text style={[styles.loginText, { color: theme.textSecondary }]}>Already have an account? </Text>
           <TouchableOpacity onPress={() => router.push('/login')}>
             <Text style={styles.loginLink}>Log In</Text>
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.orText}>or sign up with</Text>
+        <Text style={[styles.orText, { color: theme.textSecondary }]}>or sign up with</Text>
 
         <View style={styles.socialContainer}>
           <TouchableOpacity 
-            style={styles.socialButton}
+            style={[styles.socialButton, { backgroundColor: theme.surface }]}
             onPress={() => handleSocialSignup('Google')}
           >
-            <Feather name="globe" size={24} color="#fff" />
+            <Feather name="globe" size={24} color={theme.text} />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.socialButton}
+            style={[styles.socialButton, { backgroundColor: theme.surface }]}
             onPress={() => handleSocialSignup('Apple')}
           >
-            <Feather name="smartphone" size={24} color="#fff" />
+            <Feather name="smartphone" size={24} color={theme.text} />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.socialButton}
+            style={[styles.socialButton, { backgroundColor: theme.surface }]}
             onPress={() => handleSocialSignup('Facebook')}
           >
-            <Feather name="users" size={24} color="#fff" />
+            <Feather name="users" size={24} color={theme.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -249,7 +249,6 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
   },
   scrollContainer: {
     flex: 1,
@@ -276,18 +275,15 @@ const styles = StyleSheet.create({
   brandName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
     marginBottom: 10,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
   },
   formContainer: {
@@ -298,14 +294,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#fff',
     marginBottom: 8,
     fontWeight: '500',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#333',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: 50,
@@ -315,7 +309,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: '#fff',
     fontSize: 16,
   },
   eyeIcon: {
@@ -345,7 +338,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loginText: {
-    color: '#666',
     fontSize: 14,
   },
   loginLink: {
@@ -354,7 +346,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   orText: {
-    color: '#666',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 20,
@@ -368,7 +359,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#333',
     alignItems: 'center',
     justifyContent: 'center',
   },

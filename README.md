@@ -1,4 +1,4 @@
-# Sportify - Sports & Lifestyle App
+# SportFury - Sports & Lifestyle App
 
 ## 📱 **Assignment Implementation Overview**
 

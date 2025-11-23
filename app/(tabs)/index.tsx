@@ -136,7 +136,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.surface }]}>
         <View style={styles.headerTop}>
-          <Text style={[styles.appName, { color: theme.text }]}>SportsZone</Text>
+          <Text style={[styles.appName, { color: theme.text }]}>SportFury</Text>
           <View style={styles.headerRight}>
             {user && <Text style={[styles.welcomeText, { color: theme.textSecondary }]}>Hello, {user.firstName}</Text>}
             <TouchableOpacity onPress={() => router.push('/profile')}>
